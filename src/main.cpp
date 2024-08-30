@@ -8,10 +8,10 @@
 
 const char* ssid = "ASSI_LART_T24";
 const char* password = "T24E_aut";
-WebServer server(80);
+//WebServer server(80);
 
 #define PIN 16           // Pino controlo LEDS
-#define NUM_LEDS 15     // Número de LEDS
+#define NUM_LEDS 16     // Número de LEDS
 #define QUEUE_LENGTH 5
 #define QUEUE_ITEM_SIZE sizeof(int)
 
@@ -55,7 +55,7 @@ void setup() {
   timeout = millis();
 
   /***        --- Initiate access point and configure static ip addresss as 06.14.22.24 ---         ***/
-
+/*
   WiFi.mode(WIFI_AP);  
   WiFi.softAP(ssid, password);
   IPAddress IP = IPAddress (06, 14, 22, 24);
@@ -69,13 +69,13 @@ void setup() {
     String message = "Estado da Missao: " + String(digitalRead(BRAKE));
     server.sendHeader("Connection", "close");
     server.send(200, "text/plain", message);
-  });
+  });*/
 
 }
 
 
 void loop() {
-  server.handleClient();
+ // server.handleClient();
   // put your main code here, to run repeatedly:
   if(digitalRead(BRAKE))
   {
@@ -98,6 +98,7 @@ void loop() {
       volatile float voltage = 6*adc_value/4095;
       volatile float pressao = voltage *  140 / 3.9998;
       Serial.println(voltage);
+      Serial.println(pressao);
       CAN1.TXpacketBegin(0x253,0);
       CAN1.TXpacketLoad(((uint8_t)pressao >> 8) && 0xFF);
       CAN1.TXpacketLoad((uint8_t)pressao && 0xFF);
